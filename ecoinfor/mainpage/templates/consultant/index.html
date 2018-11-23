@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>快腿财经</h1>
+<p><strong>专注更快资讯</strong></p>
+
+
+{% if latest_share_list %}
+	<ul>
+	{% for share in latest_share_list %}
+		<li><a href = "{% url 'consultant:detail_share' share.id%}">{{ share.name_text }}</a></li>
+	{% endfor %}
+	</ul>
+{% else %}
+	<p> No recently recommendations. Please try again later. </p>
+{% endif %}
+
+
+
+</body>
+</html>

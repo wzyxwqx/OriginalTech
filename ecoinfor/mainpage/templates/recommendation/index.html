@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>快腿财经</h1>
+<p><strong>专注更快资讯</strong></p>
+
+
+{% if latest_news_list %}
+	<ul>
+	{% for news in latest_news_list %}
+		<li><a href = "{% url 'recommendation:detail_news' news.id%}">{{ news.title_text }}</a></li>
+	{% endfor %}
+	</ul>
+{% else %}
+	<p> No recently news. Please try again later. </p>
+{% endif %}
+
+
+</body>
+</html>
