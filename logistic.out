@@ -1,0 +1,17 @@
+nohup: ignoring input
+collecting stock data ...
+constructing data set ...
+1000
+timed out
+timed out
+timed out
+2000
+timed out
+timed out
+timed out
+Traceback (most recent call last):
+  File "logistic_model.py", line 36, in <module>
+    stock_data = ts.get_hist_data(line[1], start = line[0].strftime("%Y-%m-%d"), end = line[0].strftime("%Y-%m-%d"))
+  File "/usr/local/lib/python3.6/dist-packages/tushare/stock/trading.py", line 100, in get_hist_data
+    raise IOError(ct.NETWORK_URL_ERROR_MSG)
+OSError: 获取失败，请检查网络.
