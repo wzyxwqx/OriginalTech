@@ -23,5 +23,7 @@ urlpatterns = [
     path('mainpage/', include('mainpage.urls')),
     path('consultant/', include('consultant.urls')),
     path('recommendation/', include('recommendation.urls')),
-    path('', views.index, name = 'Welcome'),
+    path('users/', include('users.urls')),
+    path('', views.WelcomeView.as_view(), name='Welcome'),
+    path('users/', include('django.contrib.auth.urls')),
 ]

@@ -1,10 +1,10 @@
 from django.db import models
 from django.utils import timezone
-# Create your models here.
+from django.contrib.auth.models import AbstractUser
 
 
-# Be careful! In 'INSTALLED_APPS' at setting.py 
-# There is an APP called 'contib.messages'!
+# Be careful! In 'INSTALLED_APPS' at setting.py
+# There is an APP called 'contrib.messages'!
 # Later recommend that we should use class 'Information' instead
 class Message(models.Model):
 	title_text = models.CharField(max_length = 20)
@@ -12,6 +12,7 @@ class Message(models.Model):
 	pub_date = models.DateTimeField('date published')
 	def __str__(self):
 		return self.title_text
+
 
 class Share(models.Model):
 	name_text = models.CharField(max_length = 20)
@@ -21,7 +22,11 @@ class Share(models.Model):
 	def __str__(self):
 		return self.name_text
 
-# class Personal(models.Model):
 
+class Market(models.Model):
+    market_name = models.CharField(max_length=20)
+    market_index = models.DecimalField(max_digits=6, decimal_places=2)
+    pub_time = models.DateTimeField('date published')
 
-
+    def __str__(self):
+        return self.market_name

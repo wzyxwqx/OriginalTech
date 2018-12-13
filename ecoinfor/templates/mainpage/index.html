@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>财富通</h1>
+<p><strong>专注更快资讯</strong>
+
+{% if user.is_authenticated %}
+    <p> 您已登录，欢迎您：<a href="#">{{ user.username }}</a></p>
+    <button class="btn btn-defaut"><a href="{% url 'logout' %}">注销登陆</a></button>
+    </p>
+{% else %}
+    <p>
+    <button class="btn btn-default"><a href="{% url 'login' %}">登录</a></button>
+    <button class="btn btn-default"><a href="{% url 'users:register' %}">注册</a></button>
+    </p>
+{% endif %}
+
+
+<h2>财经快讯</h2>
+{% if latest_news_list %}
+	<ul>
+	{% for key in latest_news_list %}
+		<p>{{ key }}</p>
+	{% endfor %}
+	</ul>
+{% else %}
+	<p> No recently news. Please try again later. </p>
+{% endif %}
+
+
+<a href = "/consultant/">投资顾问</a>
+<br>
+<a href = "/recommendation/">智能推荐</a>
+<br>
+
+
+</body>
+</html>

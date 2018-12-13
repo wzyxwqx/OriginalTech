@@ -1,8 +1,6 @@
-from django.shortcuts import render
-from django.template import loader
+from django.views import generic
 
 
-# code here
-
-def index(request):
-	return render(request, 'ecoinfor/pagejump.html')
+class WelcomeView(generic.TemplateView):
+    template_name = 'ecoinfor/pagejump.html'
+    pass
