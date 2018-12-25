@@ -58,10 +58,10 @@ print('===========================================')
 print('   start jieba cut')
 def jieba_keywords(news):
     keywords = jieba.analyse.extract_tags(news, topK=20)
-#    keywords_cp = keywords[:]
-#    for word in keywords_cp:
-#        if word.isdigit():
-#            keywords.remove(word)
+    keywords_cp = keywords[:]
+    for word in keywords_cp:
+        if word.isdigit():
+            keywords.remove(word)
     return keywords
 
 
