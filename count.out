@@ -1,7 +1,0 @@
-nohup: ignoring input
-select recent news from database ...
-select news before 2018-12-18 09:10:00
-Building prefix dict from the default dictionary ...
-Loading model from cache /tmp/jieba.cache
-Loading model cost 1.003 seconds.
-Prefix dict has been built succesfully.
