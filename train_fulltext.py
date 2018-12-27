@@ -17,12 +17,12 @@ cursor = db.cursor()
 
 now_date = datetime.datetime.now()
 print('now:',now_date)
-start_date = now_date + datetime.timedelta(days=-37)
+start_date = now_date + datetime.timedelta(days=-17)
 print('start:',start_date)
 end_date = now_date + datetime.timedelta(days=-7)
 print('end:',end_date)
 check_sql = "select title, content, keystock, time from news where keystock != ''  and time between "\
-            + "'%s'"%(start_date.strftime('%Y-%m-%d')) + " and " + "'%s'"%(end_date.strftime('%Y-%m-%d')) +" order by time desc";
+            + "'%s'"%(start_date.strftime('%Y-%m-%d')) + " and " + "'%s'"%(end_date.strftime('%Y-%m-%d')) +" order by time desc limit 20";
 print(check_sql)
 cursor.execute(check_sql)
 result = cursor.fetchall()
@@ -73,7 +73,7 @@ def jieba_cutnews(news, stopwordslist):
     ans = jieba.cut(news.strip())
     outstr = ''
     for word in ans:
-        if word not in stopwordslist and not word.isgit():
+        if word not in stopwordslist and not word.isdigit():
             if word != '\t':
                 outstr += word
                 outstr += ' '
@@ -86,14 +86,17 @@ def stopwords_list(filepath):
     return stopwords
 
 
-content_df = pd.DataFrame(content_info, columns=['content'])
+#content_df = pd.DataFrame(content_info, columns=['content'])
 #jieba.analyse.set_stop_words("stopwords2")
-jieba_content = content_df.content.apply(jieba_cutnews)
-
+#jieba_content = content_df.content.apply(jieba_cutnews)
+content_S = []
+stopwords = stopwords_list("stopwords2")
+for line in content_info:
+    content_S.append(jieba_cutnews(line, stopwords))
 #content_S = []
 #for line in jieba_content:
 #    content_S.append(' '.join(line))
-content_S = list(jieba_content)
+#content_S = list(jieba_content)
 print('    end jieba cut')
 
 

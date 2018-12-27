@@ -37,21 +37,59 @@ news_size = len(title_info)
 print('size of data:', news_size)
 print('    end Fetching')
 
+
+# organize data
+print('===========================================')
+print('  stock data processing..')
+stock_dict = {}
+for line in range(news_size):
+    stocklist = keystock_info[line].split()
+    for stock in stocklist:
+        if stock in stock_dict:
+            stock_dict[stock] += content_info[line]
+        else:
+            stock_dict[stock] = content_info[line]
+stock_code = list(stock_dict.keys())
+stock_news = list(stock_dict.values())
+print('   done.')
+
 # jieba cut
 print('===========================================')
 print('   start jieba cut')
 def jieba_keywords(news):
     keywords = jieba.analyse.extract_tags(news, topK=20)
+    keywords_cp = keywords[:]
+    for word in keywords_cp:
+        if word.isdigit():
+            keywords.remove(word)
     return keywords
 
 
-content_df = pd.DataFrame(content_info, columns=['content'])
-jieba.analyse.set_stop_words("stopwords2")
-jieba_content = content_df.content.apply(jieba_keywords)
+def jieba_cutnews(news, stopwordslist):
+    ans = jieba.cut(news.strip())
+    outstr = ''
+    for word in ans:
+        if word not in stopwordslist and not word.isgit():
+            if word != '\t':
+                outstr += word
+                outstr += ' '
+    return outstr
 
+
+# create stopwords list  
+def stopwords_list(filepath):
+stopwords = [line.strip() for line in open(filepath, 'r', encoding='utf-8').readlines()]
+    return stopwords
+
+
+#content_df = pd.DataFrame(content_info, columns=['content'])
+#jieba.analyse.set_stop_words("stopwords2")
+#jieba_content = content_df.content.apply(jieba_cutnews)
 content_S = []
-for line in jieba_content:
-    content_S.append(' '.join(line))
+stopwords = stopwords_list("stopwords2")
+for line in content_info:
+    content_S.append(jieba_cutnews(line, stopwords))
+
 
 print('    end jieba cut')
 
@@ -72,20 +110,16 @@ print('   Loading Complete')
 
 # organize results
 predict_res = classifier.predict_proba(vectorizer.transform(content_S))
-stock_predict = {}
-
-for line in range(news_size):
-    stocklist = keystock_info[line].split()
-    for stock in stocklist:
-        if stock in stock_predict:
-            stock_predict[stock] += predict_res[line][0] - predict_res[line][1]
-        else:
-            stock_predict[stock] = predict_res[line][0] - predict_res[line][1]
-
+stock_proba = [x[0] for x in predict_res]
+stock_predict = list(zip(stock_code, stock_proba, content_S))
 
 # sort
-stock_predict_items = stock_predict.items()
-back_items = [[v[1], v[0]] for v in stock_predict_items]
-back_items.sort(reverse=True)
-ranking = [[v[1], v[0]] for v in back_items]
-print(ranking[0:10])
+stock_predict.sort(key=lambda x : x[1], reverse=True)
+for line in range(10):
+    print('Rank :',line,' / 10:')
+    print('Code :',stock_predict[line][0])
+    print('Proba:',stock_predict[line][1])
+    print('Related keywords:',jieba_content[line])
+
+print('feature:', vectorizer.get_feature_names()[0:100])
+print('feature:', vectorizer.get_feature_names()[-100:-1])
