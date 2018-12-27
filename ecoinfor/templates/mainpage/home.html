@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>My First Heading</h1>
+
+<h2>This is the Second Heading.</h2>
+
+
+
+<p>My first paragraph, related to string and loops. </p>
+
+{{ string }}<br>
+站点：{{ info_dic.site }}<br>
+内容：{{ info_dic.content }}<br>
+{% for key, value in info_dic.items %}
+	{{ key }}: {{ value }}<br>
+{% endfor %}
+
+<a href=“http://www.ziqiangxuetang.com”>This is a link.</a><br>
+
+
+
+
+
+<p>This is another paragraph, which is about List and url-name change.</p>
+
+{% for i in TutorialList %}
+{{ i }}<br>
+{% endfor %}<br>
+
+{% for item in List %}
+	{{ item }}{% if not forloop.last %},{% endif %}
+{% endfor %}
+
+{% url 'add2' 4 5 %}
+
+<!-- 使用as取别名,the_url应该是本网站的地址 -->
+{% url 'add2' arg arg2 as the_url %}
+<a href="{{ the_url }}">链接到：{{ the_url }}</a>
+
+<h2> LOGIC </h2>
+<p>This is the third paragraph, talking about logic operation.</p>
+<br>
+<!-- 注意比较符号前后必须至少一个空格！ -->
+<!-- {% if var <= 90 %} Excellent!<br> 
+	{% elif var > 60 %} Good!<br>
+	{% else %} Oh, you should study harder!<br>
+	{% endif %} -->
+
+<--{% if 'xuetang' in List %}学堂在名单中{% endif %}-->
+
+
+
+
+<h2> RENDER </h2>
+
+{{ request.user }}?<br>
+{{ request.path }}<br>
+{{ request.GET.urlencode }}<br>
+
+{% if request.user.is_authenticated %}
+	{{ request.user.username }}, 您好
+{% else %}
+	请登录，这里放登录链接
+{% endif %}
+
+
+<!-- <a href="{{ request.path }}?{{ request.GET.urlencode }} 
+	& delete=1">当前网址加参数 delete</a> -->
+
+
+<h2> INDEX </h2>
+<p> Please input two numbers.</p>
+
+<form action="/add/" method="get">
+	a:<input type = "text" name = "a"> <br>
+	b:<input type = "text" name = "b"> <br>
+
+	<input type = "submit" value = "提交">
+</form>
+
+
+
+</body>
+</html>
