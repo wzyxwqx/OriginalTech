@@ -4,7 +4,31 @@ import os
 from cfn_crawler.items import CfnCrawlerItem
 from scrapy.selector import Selector
 
+
 class CfnCrawlerSpider(scrapy.Spider):
+    '''Spider: crawling financial news starting from CFN(China Financial News)
+
+
+    The SinaCrawlerSpider class starts from finance.sina.com.cn and proceeds crawling
+    following a depth-first algorithm, tests the validity of returned content of news
+    and stores the content into the database of server.
+
+
+    Attributes:
+        name: The name of crawler.
+        allowed_domains: List of allowed domains for crawler.
+        start_urls: List of url which the spider starts at.
+        crawled_urls: Set of urls which have been crawled.
+        visited_urls: Set of urls visited for the depth-first algorithm.
+        custom_settings:
+            DEPTH_PRIORITY: set 1 as default.
+            DEPTH_LIMIT: set 4 as default.
+            CLOSESPIRDER_TIMEOUT: set 420 as default, 7 mins timed out.
+        cookies: Dict of cookies. Refer to scrapy for details.
+        headers: Dict of user-agent string. Refer to scrapy for details.
+        meta: Dict of some attributes. Refer to scrapy for details.
+        
+    '''
     name = "cfn_crawler"
     allowed_domains = ["financeun.com"]
     custom_settings = {
@@ -21,6 +45,7 @@ class CfnCrawlerSpider(scrapy.Spider):
             'handle_httpstatus_list': [301, 302]}
 
     def __init__(self):
+        '''Initiate to get crawled_urls for later use.'''
         f = open("/root/originaltech/crawler/fin_crawler/fin_crawler/spiders/crawled_urls", "r")
         line = f.readline()
         while line != "":
@@ -31,9 +56,11 @@ class CfnCrawlerSpider(scrapy.Spider):
         print("crawled " + str(len(self.crawled_urls)) + " websites")
 
     def start_requests(self):
+        '''The main function calls Request from scrapy.'''
         yield scrapy.Request(self.start_urls[0], callback = self.parse, headers = self.headers, cookies = self.cookies, meta = self.meta)
 
     def parse(self, response):
+        '''The function processing callback information in scrapy.Request'''
         if response.url in self.visited_urls:
             return
         print("parsing " + str(response.url))
@@ -49,6 +76,8 @@ class CfnCrawlerSpider(scrapy.Spider):
             item['content'] = " ".join(content_list).replace('\u3000', '')
             item['content'] += " ".join(content_list2).replace('\u3000', '')
             if item['title'] != None:
+                # Got right news.
+                # Add needed attributes.
                 copyright = selector.xpath('//div[@class="copyright"]/text()').extract()
                 item['time'] = copyright[0].split('\xa0')[0].replace('年', '-').replace('月', '-').replace('日', '').replace('时', ':').replace('分', '').strip('\n').strip(' ')
                 item['source'] = copyright[0].split('\xa0\xa0')[1].strip(' ')
@@ -58,6 +87,7 @@ class CfnCrawlerSpider(scrapy.Spider):
                 self.crawled_urls.add(response.url)
                 yield item
         for sel in selector.xpath('//a'):
+            # Crawl further in the links available.
             link = sel.xpath("@href").extract_first()
             if link != None and not link.endswith("pdf"):
                 url = link
@@ -68,6 +98,7 @@ class CfnCrawlerSpider(scrapy.Spider):
                     yield scrapy.Request(url, callback = self.parse, headers = self.headers, cookies = self.cookies, meta = self.meta)
 
     def processUrl(self, url):
+        '''Process urls in the right form for scrapy.Request.'''
         items = url.split("/")
         ss = list()
         for s in items:

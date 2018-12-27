@@ -6,7 +6,30 @@ from datetime import datetime
 from cnstock_crawler.items import CnstockCrawlerItem
 from scrapy.selector import Selector
 
+
 class CnstockCrawlerSpider(scrapy.Spider):
+    '''Spider: crawling financial news starting from CNSTOCK
+        
+
+    The SinaCrawlerSpider class starts from finance.sina.com.cn and proceeds crawling
+    following a depth-first algorithm, tests the validity of returned content of news
+    and stores the content into the database of server.
+
+
+    Attributes:
+        name: The name of crawler.
+        allowed_domains: List of allowed domains for crawler.
+        start_urls: List of url which the spider starts at.
+        crawled_urls: Set of urls which have been crawled.
+        visited_urls: Set of urls visited for the depth-first algorithm.
+        custom_settings:
+            DEPTH_PRIORITY: set 1 as default.
+            DEPTH_LIMIT: set 4 as default.
+            CLOSESPIRDER_TIMEOUT: set 420 as default, 7 mins timed out.
+        cookies: Dict of cookies. Refer to scrapy for details.
+        headers: Dict of user-agent string. Refer to scrapy for details.
+        meta: Dict of some attributes. Refer to scrapy for details.
+    '''
     name = "cnstock_crawler"
     allowed_domains = ["cnstock.com"]
     start_urls = ["http://www.cnstock.com/"]
@@ -22,22 +45,22 @@ class CnstockCrawlerSpider(scrapy.Spider):
     meta = {'dont_redirect': True,
             'handle_httpstatus_list': [301, 302]}
     def __init__(self):
+        '''Initiate to get crawled_urls for later use.'''
         f = open("/root/originaltech/crawler/cnstock_crawler/cnstock_crawler/spiders/crawled_urls", "r")
         line = f.readline()
         while line != "":
             line = line.strip("\n")
             self.crawled_urls.add(line)
-            #self.visited_urls.add(line)
             line = f.readline()
         f.close()
         print("crawled " + str(len(self.crawled_urls)) + " websites")
-        #self.conn = pymysql.connect(host = "localhost", user = "mlf", passwd = "mashiro120", db = "crawled_news", charset = "utf8")
-        #self.cursor = self.conn.cursor()
 
     def start_requests(self):
+        '''The main function calls Request from scrapy.'''
         yield scrapy.Request(self.start_urls[0], callback = self.parse, headers = self.headers, cookies = self.cookies, meta = self.meta)
 
     def parse(self, response):
+        '''The function processing callback information in scrapy.Request'''
         if response.url in self.visited_urls:
             return
         print("parsing " + str(response.url))
@@ -51,16 +74,10 @@ class CnstockCrawlerSpider(scrapy.Spider):
         content_list = selector.xpath('//div[@id="qmt_content_div"]/p/text()').extract()
         item['content'] = " ".join(content_list).replace('\u3000', '')
         if item['title'] != None:
-            #f = open("./crawled_urls", "a+")
-            #f.write(str(response.url) + "\n")
-            #f.close()
             self.crawled_urls.add(response.url)
-            #insert_sql = "insert into cnstock_news (title, url, time, content, source) values ('" + item['title'][0] + "', '" + str(response.url) + "', '" + item['time'][0] + "', '" + item['content'] + "', '" + item['source'][0].strip("来源：") + "')"
-            #self.cursor.execute(insert_sql)
-            #self.conn.commit()
             yield item
         for sel in selector.xpath('//a'):
-            #title = sel.xpath("text()").extract_first()
+            # Crawl further in the links available
             link = sel.xpath("@href").extract_first()
             if link != None and not link.endswith("pdf"):
                 url = link
@@ -71,6 +88,7 @@ class CnstockCrawlerSpider(scrapy.Spider):
                     yield scrapy.Request(url, callback = self.parse, headers = self.headers, cookies = self.cookies, meta = self.meta)
 
     def processUrl(self, url):
+        '''Process urls in the right form for scrapy.Request.'''
         items = url.split("/")
         ss = list()
         for s in items:

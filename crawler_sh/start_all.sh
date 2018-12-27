@@ -1,3 +1,5 @@
+#!/bin/sh
+source ~/.bashrc
 cd /root/originaltech/crawler/crawler_sh
 bash cs.sh
 sleep 5m
