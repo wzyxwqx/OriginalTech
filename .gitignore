@@ -1,4 +1,7 @@
 data.csv
 *.log
 *.bin
+*.csv
+*.out
+*.pyc
 

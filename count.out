@@ -1,58 +1,7 @@
 nohup: ignoring input
 select recent news from database ...
-select news before 2018-12-11 09:10:00
-select news before 2018-12-10 09:10:00
-select news before 2018-12-09 09:10:00
-select news before 2018-12-08 09:10:00
-select news before 2018-12-07 09:10:00
+select news before 2018-12-18 09:10:00
 Building prefix dict from the default dictionary ...
 Loading model from cache /tmp/jieba.cache
-Loading model cost 0.977 seconds.
+Loading model cost 1.003 seconds.
 Prefix dict has been built succesfully.
-select news before 2018-12-06 09:10:00
-select news before 2018-12-05 09:10:00
-select news before 2018-12-04 09:10:00
-select news before 2018-12-03 09:10:00
-select news before 2018-12-02 09:10:00
-select news before 2018-12-01 09:10:00
-select news before 2018-11-30 09:10:00
-select news before 2018-11-29 09:10:00
-select news before 2018-11-28 09:10:00
-select news before 2018-11-27 09:10:00
-select news before 2018-11-26 09:10:00
-select news before 2018-11-25 09:10:00
-select news before 2018-11-24 09:10:00
-select news before 2018-11-23 09:10:00
-select news before 2018-11-22 09:10:00
-select news before 2018-11-21 09:10:00
-select news before 2018-11-20 09:10:00
-select news before 2018-11-19 09:10:00
-select news before 2018-11-18 09:10:00
-select news before 2018-11-17 09:10:00
-select news before 2018-11-16 09:10:00
-select news before 2018-11-15 09:10:00
-select news before 2018-11-14 09:10:00
-select news before 2018-11-13 09:10:00
-select news before 2018-11-12 09:10:00
-select news before 2018-11-11 09:10:00
-select news before 2018-11-10 09:10:00
-select news before 2018-11-09 09:10:00
-select news before 2018-11-08 09:10:00
-Traceback (most recent call last):
-  File "stock_news_count.py", line 49, in <module>
-    cursor.execute(insert_sql % ((cur_time.strftime("%Y-%m-%d") + " 09:10:00"), key, value, good, bad))
-  File "/usr/local/lib/python3.6/dist-packages/pymysql/cursors.py", line 170, in execute
-    result = self._query(query)
-  File "/usr/local/lib/python3.6/dist-packages/pymysql/cursors.py", line 328, in _query
-    conn.query(q)
-  File "/usr/local/lib/python3.6/dist-packages/pymysql/connections.py", line 516, in query
-    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
-  File "/usr/local/lib/python3.6/dist-packages/pymysql/connections.py", line 727, in _read_query_result
-    result.read()
-  File "/usr/local/lib/python3.6/dist-packages/pymysql/connections.py", line 1066, in read
-    first_packet = self.connection._read_packet()
-  File "/usr/local/lib/python3.6/dist-packages/pymysql/connections.py", line 656, in _read_packet
-    packet_header = self._read_bytes(4)
-  File "/usr/local/lib/python3.6/dist-packages/pymysql/connections.py", line 702, in _read_bytes
-    CR.CR_SERVER_LOST, "Lost connection to MySQL server during query")
-pymysql.err.OperationalError: (2013, 'Lost connection to MySQL server during query')

@@ -9,7 +9,7 @@ cursor = db.cursor()
 
 if __name__ == "__main__":
     print("select recent news from database ...")
-    now = datetime.now() + timedelta(hours = 16)
+    now = datetime.now() + timedelta(hours = 8)
     for i in range(1, 2):
         pre_time = now + timedelta(days = -i)
         cur_time = pre_time + timedelta(days = 1)
@@ -48,5 +48,6 @@ if __name__ == "__main__":
             insert_sql = "insert into senti_stat (time, stockcode, total, good, bad) values ('%s', '%s', '%d', '%d', '%d')"
             cursor.execute(insert_sql % ((cur_time.strftime("%Y-%m-%d") + " 09:10:00"), key, value, good, bad))
             db.commit()
+    print("finish!")
 
 

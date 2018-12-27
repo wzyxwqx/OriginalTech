@@ -7,15 +7,15 @@ db = pymysql.connect(host = "165.227.30.65", user = "mlf", passwd = "mashiro120"
 cursor = db.cursor()
 
 if __name__ == "__main__":
-    '''
     print("reading stop words ...")
     f = open("Chinese_Stop_Words.txt", "r", encoding = 'utf-8')
     lines = f.readlines()
     stop_words = [line.strip() for line in lines]
     f.close()
     print("finish reading stop words!")
+    jieba.load_userdict("finance_dict_new")
     print("reading & processing news from mysql ...")
-    for count in range(1,46):
+    for count in range(1,50):
         check_sql = "select title, senti1 from news where keystock != '' and senti1 != '' and id > " + str((count-1) * 20000) + " and id < " + str(count * 20000)
         cursor.execute(check_sql)
         news_list = cursor.fetchall()
@@ -33,8 +33,7 @@ if __name__ == "__main__":
         print(count)
     f_out.close()
     print("finish processing data!")
-    '''
     print("fasttext training ...")
     classifier = fastText.train_supervised(input = 'training_data_title', epoch=50, lr=0.05, wordNgrams=5, minCount=1)
     print("finish training!")
-    classifier.save_model('fast_model_title.bin')
+    classifier.save_model('fast_model_V2.bin')
