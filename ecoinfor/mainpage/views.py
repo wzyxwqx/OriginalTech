@@ -3,64 +3,55 @@ from django.template import loader
 from django.http import HttpResponse
 from django.db import connection
 from django.views import generic
+from .stock_name_code import name_code
 
-from .models import Message, Share, Market
+from .index_data import latest_index_data
+from .models import TempNews
 # Create your views here.
 
-
-class IndexView(generic.ListView):
-    template_name = 'mainpage/index.html'
-    context_object_name = 'latest_message_list'
-
-    def get_queryset(self):
-        """Return the last ten published messages"""
-        return Message.objects.order_by('-pub_date')[:10]
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['main_markets'] = list(Market.objects.all())
-        return context
-
-
 def index(request):
-	template = loader.get_template('mainpage/index.html')
-	# latest_message_list = Message.objects.order_by('-pub_date')[:10]
+    template = loader.get_template('mainpage/index.html')
+    results = TempNews.objects.exclude(abstract='None').exclude(abstract='').values('title', 'time', 'abstract').distinct().order_by('-time')[:15]
+    latest_news_list = []
+    index_list = []
+    stock_list = ['000001', '399001', '395004', '399005']
+    index_dict = latest_index_data(stock_list)
+    for key in stock_list:
+        index_list.append(index_dict[key]['open'])
+    for key in results:
+        print(key)
+        latest_news_list.append((key['title'], key['time'], key['abstract']))
 
-	cursor = connection.cursor()
-	sql = "SELECT * from cs_news WHERE keystock != '' ORDER BY time limit 10"
-	cursor.execute(sql)
-	
-	results = cursor.fetchall()
-	latest_news_list = []
-	for key in results:
-		latest_news_list.append(key[1])
 
-	context = {
-		'latest_news_list': latest_news_list,
+    context = {
+		'latest_news_list': latest_news_list, 'szzs': index_list[0], 'shenz': index_list[1], 'cyb': index_list[2], 'zxb': index_list[3]
 	}
-	return HttpResponse(template.render(context, request))
+    return HttpResponse(template.render(context, request))
 
-
-def detail_share(request, share_id):
-	try:
-		share = Share.objects.get(pk = message_id)
-	except Share.DoesNotExist:
-		raise Http404("This share does not exist. Please try again later.")
-	return render(request, 'share/detail.html', {'share':share})
-
-
-"""def consultant(request):
-	template = loader.get_template('consultant/index.html')
-	latest_share_list = Share.objects.order_by('-hot_index')[:10]
-	context = {
-		'latest_share_list': latest_share_list
-	}
-	return HttpResponse(template.render(context, request))"""
-
-
-def detail_message(request, message_id):
-	try:
-		message = Message.objects.get(pk = message_id)
-	except Message.DoesNotExist:
-		raise Http404("Message does not exist. Please try again later.")
-	return render(request, 'mainpage/detail.html', {'message':message})
+def content_index(request, title):
+    res = name_code()
+    template = loader.get_template('mainpage/content.html')
+    results = TempNews.objects.exclude(abstract='None').exclude(abstract='').values('title', 'time', 'content', 'source', 'keystock').distinct().order_by('-time')
+    title_ = []
+    time_ = []
+    content_ = []
+    source_ = []
+    keystock_ = []
+    index_list = []
+    stock_list = ['000001', '399001', '395004', '399005']
+    index_dict = latest_index_data(stock_list)
+    for key in stock_list:
+        index_list.append(index_dict[key]['open'])
+    for key in results:
+        if key['title'] == title:
+            title_ = key['title']
+            time_ = key['time']
+            content_ = key['content']
+            source_ = key['source']
+            keystock_ = key['keystock']
+            break
+    context = {
+        'title': title_, 'time': time_, 'content': content_, 'source': source_, 'keystock': res[keystock_[1:7]], 'szzs': index_list[0], 'shenz': index_list[1], 'cyb': index_list[2], 'zxb': index_list[3]
+    }
+    print(keystock_)
+    return HttpResponse(template.render(context, request))

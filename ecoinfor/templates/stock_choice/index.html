@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<h1>财富通</h1>
+<p><strong>专注更快资讯</strong></p>
+
+<body>
+
+
+<h2>搜索股票</h2>
+
+<h3>请输入股票代码：</h3>
+
+<form mothod='POST'>
+    <input type="text" name="stockcode">
+    <input type="submit" value="搜索">
+</form>
+
+{% if latest_stock_list %}
+	<ul>
+	{% for stk in latest_stock_list %}
+		<li><a href = "{% url 'stock_choice:detail_stock' stk.id%}">{{ stk.stockname }}</a></li>
+	{% endfor %}
+	</ul>
+{% else %}
+	<p> No recently stock. Please try again later. </p>
+{% endif %}
+
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+<h1> Hello, {{ user.username }}</h1>
+
+<h2>请选择您的自选股：</h2>
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form method='POST'>
+    {% csrf_token %}
+    {% for stock in stocks %}
+        <label class="checkbox-inline">
+            <input value="{{ stock.id }}" type="checkbox" name="shares"/>{{ stock.stockname }}
+        </label>
+    {% endfor %}
+    <h3>
+        <input type="submit" value="选择">
+    </h3>
+</form>

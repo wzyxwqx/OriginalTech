@@ -1,3 +1,4 @@
+# encoding=utf-8
 import pickle as pk
 import pymysql
 import pandas as pd

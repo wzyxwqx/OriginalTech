@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 
 
 from . import views
@@ -6,8 +6,10 @@ from . import views
 
 app_name = 'mainpage'
 urlpatterns = [
-#	path('', views.IndexView.as_view(), name = 'mainpage'),
 	path('', views.index, name = 'mainpage'),
-	path('<int:message_id>/detail', views.detail_message, name = 'detail_message'),
-#	path('<int:pk>/message', view.message, name = 'message')
+	# path('', views.index, name = 'mainpage'),
+    path('users/', include('users.urls')),
+    path('users/', include('django.contrib.auth.urls')),
+    path(('<str:title>/'), views.content_index, name = 'content'),
+#	path('<int:pk>/News', view.News, name = 'News')
 ]

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<h1>财富通</h1>
+<p><strong>专注更快资讯</strong></p>
+
+<body>
+
+
+<h2>搜索股票</h2>
+
+<h3>请输入股票代码：</h3>
+
+<form method='POST'>
+    {% csrf_token %}
+    <input type="text" name="stockcode">
+    <input type="submit" value="添加自选股">
+</form>
+
+<form method='POST'>
+    {% csrf_token %}
+{% if users_stocks %}
+<h3>下列是您当前的自选股，选择并删除：</h3>
+	<ul>
+	{% for stock in users_stocks %}
+        <label class="checkbox-inline">
+        		<li><input value="{{ stock.id }}" type="checkbox" name="stocks_to_delete"><a>{{ stock.stockname }}</a></li>
+    	</label>
+	{% endfor %}
+	</ul>
+	
+    <input type="submit" value="删除">
+{% else %}
+	<p> No recently stock. Please try again later. </p>
+{% endif %}
+</form>
+
+</body>
+</html>

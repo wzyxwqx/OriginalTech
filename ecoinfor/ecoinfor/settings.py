@@ -40,8 +40,8 @@ INSTALLED_APPS = [
 
     'users',
     'mainpage',
-    'consultant',
     'recommendation',
+    'stock_choice',
 ]
 
 MIDDLEWARE = [
@@ -86,7 +86,24 @@ DATABASES = {
         'PASSWORD': "mashiro120",
         'NAME': "crawled_news", 
         'charset': "utf8",
+    },
+    'stock':{
+        'ENGINE': 'django.db.backends.mysql',
+        'HOST':'165.227.30.65',
+        'USER': "mlf",
+        'PASSWORD': "mashiro120",
+        'NAME': "stock_data", 
+        'charset': "utf8",
     }
+}
+
+DATABASE_ROUTERS = ['ecoinfor.database_router.DatabaseAppsRouter']
+DATABASE_APPS_MAPPING = {
+    'mainpage': 'default',
+    'users':'stock',
+    'recommendation':'default',
+
+    'stock_choice': 'stock',
 }
 
 
